@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Email Verification</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f0f4f8;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .card {
+      background-color: #fff;
+      max-width: 500px;
+      width: 90%;
+      padding: 30px 25px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+    h1 {
+      color: #28a745;
+      margin-bottom: 10px;
+    }
+    .error h1 {
+      color: #dc3545;
+    }
+    .warning h1 {
+      color: #ffc107;
+    }
+    p {
+      color: #555;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    @media (max-width: 480px) {
+      .card {
+        padding: 20px 15px;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      p {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card {% if status == 'error' %}error{% elif status == 'already_verified' %}warning{% endif %}">
+    {% if status == 'success' %}
+      <h1>Email Verified</h1>
+      <p>Hello {{ name }}, your email has been successfully verified.</p>
+      <p>You can now log in and start using your account.</p>
+    {% elif status == 'already_verified' %}
+      <h1>Already Verified</h1>
+      <p>Hello {{ name }}, your email was already verified earlier.</p>
+    {% elif status == 'error' %}
+      <h1>Verification Failed</h1>
+      <p>{{ message }}</p>
+    {% endif %}
+    
+    <a href="{{ frontend_url }}/users/sign_up" class="btn">Go to Login</a>
+  </div>
+</body>
+</html>

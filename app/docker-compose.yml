@@ -1,0 +1,22 @@
+services:
+  fastapi_app:
+    build: .
+    container_name: portfolio-app
+    ports:
+      - "8093:8093"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: sh /app/entrypoint.sh
+    depends_on:              # Ensure Redis starts before the app
+      - redis                # Added Redis as a dependency
+    environment:             # These helps app know where Redis is
+      - REDIS_HOST=redis     # Use service name as hostname
+      - REDIS_PORT=6379      # Port Redis listens on
+
+  redis:                     # New Redis service
+    image: redis/redis-stack:latest
+    container_name: redis
+    ports:
+      - "6379:6379"  
