@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi.templating import Jinja2Templates
 
 from app_tools.core.config import Settings
-from app_tools.core.security.security import verify_token
+from app_tools.core.security.security import decode_token
 from app_tools.core.db.database import get_session
 
 email_router = APIRouter(responses={404: {"Description": "Page not found"}})
@@ -18,7 +18,7 @@ def email_verification(
     request: Request, token: str, db: Session = Depends(get_session)
 ):
     try:
-        user = verify_token(token, db)
+        user = decode_token(token, db)
     except HTTPException as e:
         return templates.TemplateResponse(
             "email_verification.html",

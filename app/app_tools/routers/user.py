@@ -55,8 +55,6 @@ def signin(
 def get_new_access_token(
     token_details: dict = Depends(auth_bearer.RefreshTokenBearer())
 ):
-    print(f'From refresh_token api: {token_details}')
-    timestamp_expiry = token_details['exp']
     refresh_token = security.generate_token(
         data={"id": token_details['id'], "email": token_details['email'], "refresh": True},
         token_type="refresh",
@@ -72,14 +70,9 @@ def revoke_token(
     """
     Logout the user by blacklisting the refresh token.
     """
-    if not token_details:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Invalid or expired token"
-        )
-    print(token_details)
+    jti = token_details['jti']
     # Blacklist the refresh token
-    redis.add_token_to_blacklist(token=token_details['refresh'])
+    redis.add_token_to_blacklist(jti=jti)
 
     return JSONResponse(
         content={"message": "User logged out successfully"},

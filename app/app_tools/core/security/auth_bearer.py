@@ -18,14 +18,15 @@ class TokenBearer(HTTPBearer):
 
         token = cred.credentials
         
-        if not self.token_valid(token, token_type="refresh"):
+        token_data = security.decode_token(token, token_type="refresh")
+        if not token_data:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Invalid or expired token"
             )
-
+                
         # Check if the token is blacklisted
-        if redis.is_token_blacklisted(token):
+        if redis.is_token_blacklisted(token_data['jti']):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail={
@@ -34,20 +35,12 @@ class TokenBearer(HTTPBearer):
                     'resolution': "Please login again"
                 }
             )
-        
-        token_data = security.verify_token(token, token_type="refresh")
 
         self.verify_token_data(token_data=token_data)
             
         return token_data
 
-    def token_valid(self, token: str, token_type: str = "access") -> bool:
-        try:
-            token_data = security.verify_token(token, token_type=token_type)
-            return True
-        except HTTPException as e:
-            return False
-
+    
     def verify_token_data(self, token_data: dict) -> None:
         raise NotImplementedError('Please overide this method in child classes')
 

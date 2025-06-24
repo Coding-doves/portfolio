@@ -7,11 +7,8 @@ from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException, status, Depends
 from jwt import PyJWTError
 from passlib.context import CryptContext
-from sqlalchemy.orm import Session
 
 from app_tools.core.config import Settings
-from app_tools.core.db.database import get_session
-from app_tools.models.user import User
 
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ALGORITHM = "HS256"
@@ -78,13 +75,13 @@ def generate_token(
     payload = data.copy()
     expiration = datetime.utcnow() + expires if expires else datetime.utcnow() + timedelta(hours=1)
     payload["exp"] = expiration
-    payload.update({"type": token_type})  # Type of the token (e.g., "access", "refresh", "verify")
+    payload.update({"type": token_type})  # Type of the token (e.g., "access", "refresh", "jti")
     payload.update({"jti": str(uuid.uuid4())})  # Unique identifier for the token
     
     return jwt.encode(payload=payload, key=settings.SECRET_KEY, algorithm=ALGORITHM)
 
 
-def verify_token(token: str, token_type:str = "access") -> dict:
+def decode_token(token: str, token_type:str = "access") -> dict:
     """
     Decodes a JWT token.
 

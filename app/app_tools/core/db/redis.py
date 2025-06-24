@@ -14,15 +14,16 @@ token_blacklist = redis.Redis(
 )
 
 
-def add_token_to_blacklist(token: str) -> None:
+def add_token_to_blacklist(jti: str) -> None:
     """
     Add a token to the blacklist in Redis.
     """
-    return token_blacklist.set(name=token, value="blacklisted", ex=REFRESH_TOKEN_EXPIRE_MINUTES)
+    return token_blacklist.set(name=jti, value="", ex=REFRESH_TOKEN_EXPIRE_MINUTES)
 
 
-def is_token_blacklisted(token: str) -> bool:
+def is_token_blacklisted(jti: str) -> bool:
     """
     Check if a token is blacklisted in Redis.
     """
-    return token_blacklist.exists(token) > 0
+    jti_tok = token_blacklist.get(jti)
+    return jti_tok is not None
