@@ -24,7 +24,7 @@ def create_testimonial(
 ):    
     # Handle image upload if provided
     if image:
-        image_path = upload_images("projects", image)
+        image_path = upload_images("testimonial", image)
 
     new_testim = Testimonial(
         name=name,
@@ -99,7 +99,7 @@ def update_testimonial_image(
 
     # Save new image
     if image:
-        path = upload_images("projects", image)
+        path = upload_images("testimonial", image)
 
     # Update testimonial record
     testimonial.image = path

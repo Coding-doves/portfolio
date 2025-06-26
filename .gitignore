@@ -6,3 +6,7 @@ __pycache_/
 *.pyo
 *.pyd
 .env
+.vscode
+media/*
+.pytest_cache
+testing.db

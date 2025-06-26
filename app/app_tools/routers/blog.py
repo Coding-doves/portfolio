@@ -85,7 +85,7 @@ def upload_blog_images(blog_id: int, image: UploadFile = File(...), db: Session 
         raise HTTPException(status_code=404, detail="Blog post not found")
 
     # Save image to disk
-    filepath = upload_images("projects", image)
+    filepath = upload_images("blog", image)
 
     # Update the blog post
     blog.featured_image = filepath
