@@ -1,10 +1,9 @@
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from fastapi import HTTPException, status, BackgroundTasks, Depends
+from fastapi import HTTPException, status, BackgroundTasks
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app_tools.core.email import send_email
-from app_tools.core.db.database import get_session
 from app_tools.core.security import security
 from app_tools.models.user import User
 from app_tools.schemas.user import UserCreate, LoginResponse
@@ -21,7 +20,8 @@ def register_user(
                    "and one uppercase letter."
         )
 
-    user_exist = session.query(User).filter(User.email == data.email).first()
+    user_exist = get_user_by_email(data.email, session)
+    
     if user_exist:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -37,7 +37,6 @@ def register_user(
     session.add(user)
     session.commit()
     session.refresh(user)
-    # session.close()
 
     # Account verification via email
     send_email(
@@ -58,7 +57,7 @@ def get_access_token(
     # Verify user login details is correct.
     # OAuth2PasswordRequestForm has only username and password.
     # So the username section is user of retrieve email
-    user = db.query(User).filter(User.email == data.username).first()
+    user = get_user_by_email(data.username, db)
     if not user or \
             not security.verify_password(data.password, user.password):
         raise HTTPException(
@@ -110,5 +109,27 @@ def get_access_token(
         access_token=access_token,
         refresh_token=refresh_token,
         expires_in=datetime.utcnow() + timedelta(hours=1),
-        user={"user_id": user.id, "email": user.email, "name": user.name},
+        user={"user_id": user.id, "email": user.email},
     )
+
+
+def get_user_by_email(data: str, db: Session):
+    user = db.query(User).filter(User.email == data).first()
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No user with that email exists."
+        )
+    return user
+
+
+def get_user_by_id(id: int, db: Session):
+    user = db.query(User).filter(User.id == id).first()
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No user with that Id exists."
+        )
+    return user

@@ -41,7 +41,7 @@ def send_email(
     token_data = {"id": receiver.id, "email": receiver.email}
     token = security.generate_token(token_data, expires=timedelta(hours=24))
     context = {
-        "name": receiver.name,
+        "name": receiver.email,
         "frontend_url": settings.FRONTEND_HOST,
         "verification_url": f"{settings.FRONTEND_HOST}/auth/verification/?token={token}",
         "app_name": settings.APP_NAME,
