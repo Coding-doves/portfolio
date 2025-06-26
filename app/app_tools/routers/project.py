@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, s
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
+from app_tools.dependencies.upload_img import upload_images
 from app_tools.core.db.database import get_session
 from app_tools.dependencies.slug import generate_slug
 from app_tools.models import project
@@ -151,12 +152,7 @@ def add_image_via_upload(
 
     # Handle each image upload
     for img in image_uploads:
-        filename = f"{datetime.now().timestamp()}_{img.filename}"
-        path = f"media/images/{filename}"
-        
-        # Save file to disk
-        with open(path, "wb") as buffer:
-            shutil.copyfileobj(img.file, buffer)
+        path = upload_images("projects", img)
 
         # Save image path to DB
         project_image = project.ProjectImage(project_id=projt.id, image_upload=path)
@@ -182,6 +178,7 @@ def add_video_via_upload(
         )
 
     for video in video_uploads:
+        os.makedirs("media/videos", exist_ok=True)
         filename = f"{datetime.utcnow().timestamp()}_{video.filename}"
         path = f"media/videos/{filename}"
 

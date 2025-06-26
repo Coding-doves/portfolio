@@ -85,7 +85,7 @@ def update_skill(skill_id: int, skill: SkillCreate, db: Session = Depends(get_se
         if not category:
             raise HTTPException(status_code=404, detail="Category not found")
 
-    for key, value in skill.dict(exclude_unset=True).items():
+    for key, value in skill.model_dump(exclude_unset=True).items():
         setattr(existing_skill, key, value)
 
     db.commit()

@@ -12,8 +12,8 @@ class BlogPost(Base):
     slug = Column(String(200), unique=True)
     content = Column(Text, nullable=False)
     featured_image = Column(String(255))
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now())
+    updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.utcnow)
 
     tags = relationship("BlogPostTag", back_populates="blog_post", cascade="all, delete")
 

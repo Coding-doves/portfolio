@@ -1,4 +1,3 @@
-import enum
 import uuid
 
 from datetime import datetime
@@ -6,11 +5,7 @@ from sqlalchemy import Boolean, Column, DateTime, Enum, Integer, String, func, F
 from sqlalchemy.orm import relationship
 
 from app_tools.core.db.database import Base
-
-
-class UserRole(str, enum.Enum):
-    root = "root"
-    admin = "admin"
+from app_tools.models.enums import UserRole
 
 
 class User(Base):
