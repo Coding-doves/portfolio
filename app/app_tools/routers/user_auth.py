@@ -1,4 +1,3 @@
-from datetime import datetime
 from fastapi import APIRouter, status, Depends, BackgroundTasks, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
@@ -8,9 +7,9 @@ from app_tools.core.db import redis
 from app_tools.core.db.database import get_session
 from app_tools.core.security import auth_bearer
 from app_tools.core.security import security
+from app_tools.dependencies import user
 from app_tools.schemas.user import LoginResponse, UserCreate
 from app_tools.schemas.message import UserWithMessageResponse
-from app_tools.dependencies import user
 
 user_route = APIRouter(responses={404: {"Description": "Page not found"}})
 
@@ -78,3 +77,12 @@ def revoke_token(
         content={"message": "User logged out successfully"},
         status_code=status.HTTP_200_OK
     )
+
+
+# def deactivate_account(current_user: User = Depends(get_current_user), db: Session = Depends(get_session)):
+#    current_user.is_active = False
+#   db.commit()
+#   return {"detail": "Account deactivated"}
+
+# Later add a feature for changing email and password
+

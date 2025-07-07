@@ -86,7 +86,9 @@ def upload_blog_images(blog_id: int, image: UploadFile = File(...), db: Session 
 
     # Save image to disk
     filepath = upload_images("blog", image)
-
+    if not filename:
+        raise HTTPException(status_code=500, detail="Image upload failed")
+    
     # Update the blog post
     blog.featured_image = filepath
     db.commit()

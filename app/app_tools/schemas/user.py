@@ -10,13 +10,13 @@ class UserRole(str, Enum):
 
 
 class ProfileBase(BaseModel):
-    first_name: Optional[str]
-    last_name: Optional[str]
-    username: Optional[str]
-    bio: Optional[str]
-    location: Optional[str]
-    profile_image: Optional[str]
-    resume_link: Optional[str]
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    username: Optional[str] = None
+    bio: Optional[str] = None
+    location: Optional[str] = None
+    profile_image: Optional[str] = None
+    resume_link: Optional[str] = None
 
 
 class ProfileCreate(ProfileBase):
